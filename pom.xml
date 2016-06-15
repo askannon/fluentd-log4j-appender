@@ -4,24 +4,37 @@
 	<groupId>org.fluentd</groupId>
 	<artifactId>fluentd-log4j-appender</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
+	<properties>
+		<!-- Compiler properties -->
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<encoding>UTF-8</encoding>
+
+		<version.log4j>1.2.17</version.log4j>
+		<version.fluent-logger>0.3.2</version.fluent-logger>
+		<version.junit>4.10</version.junit>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<version>${version.log4j}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fluentd</groupId>
 			<artifactId>fluent-logger</artifactId>
-			<version>0.3.2</version>
+			<version>${version.fluent-logger}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<repositories>
 		<repository>
 			<id>fluentd.org</id>
@@ -29,17 +42,8 @@
 			<url>http://fluentd.org/maven2</url>
 		</repository>
 	</repositories>
+
 	<build>
 		<finalName>fluentd-log4j-appender</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 </project>
