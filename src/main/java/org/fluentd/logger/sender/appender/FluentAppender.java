@@ -10,97 +10,97 @@ import org.fluentd.logger.FluentLogger;
 
 public class FluentAppender extends AppenderSkeleton {
 
-	private FluentLogger fluentLogger;
+    private FluentLogger fluentLogger;
 
-	private String tag = "log4j-appender";
+    private String tag = "log4j-appender";
 
-	private String host = "localhost";
+    private String host = "localhost";
 
-	private int port = 24224;
+    private int port = 24224;
 
-	private String label = "label";
+    private String label = "label";
 
-	public void setTag(final String tag) {
-		this.tag = tag;
-	}
+    public void setTag(final String tag) {
+        this.tag = tag;
+    }
 
-	public void setHost(final String host) {
-		this.host = host;
-	}
+    public void setHost(final String host) {
+        this.host = host;
+    }
 
-	public void setPort(final int port) {
-		this.port = port;
-	}
+    public void setPort(final int port) {
+        this.port = port;
+    }
 
-	public void setLabel(final String label) {
-		this.label = label;
-	}
+    public void setLabel(final String label) {
+        this.label = label;
+    }
 
-	@Override
-	public void activateOptions() {
-		try {
-			fluentLogger = FluentLogger.getLogger(tag, host, port);
-		} catch (final RuntimeException e) {
-			e.printStackTrace(); // It's not possible to log, how to do better ? ...
-		}
-		super.activateOptions();
-	}
+    @Override
+    public void activateOptions() {
+        try {
+            fluentLogger = FluentLogger.getLogger(tag, host, port);
+        } catch (final RuntimeException e) {
+            e.printStackTrace(); // It's not possible to log, how to do better ? ...
+        }
+        super.activateOptions();
+    }
 
-	@Override
-	public void close() {
-		fluentLogger.flush();
-	}
+    @Override
+    public void close() {
+        fluentLogger.flush();
+    }
 
-	@Override
-	public boolean requiresLayout() {
-		return false;
-	}
+    @Override
+    public boolean requiresLayout() {
+        return false;
+    }
 
-	@Override
-	protected void append(final LoggingEvent event) {
-		final Map<String, Object> messages = new HashMap<String, Object>();
-		messages.put("level", toEmpty(event.getLevel().toString()));
-		messages.put("loggerName", toEmpty(event.getLoggerName()));
-		messages.put("thread", toEmpty(event.getThreadName()));
-		messages.put("message", toEmpty(event.getMessage().toString()));
-		messages.put("msec", event.getTimeStamp() % 1000);
-		messages.put("throwableInfo", event.getThrowableInformation() != null ? join(event.getThrowableStrRep(), "\n") : "");
-		messages.put("ndc", toEmpty(event.getNDC()));
-		
-        if(event.locationInformationExists()) {
-    		final LocationInfo locationInfo = event.getLocationInformation();
-    		messages.put("className", toEmpty(locationInfo.getClassName()));
+    @Override
+    protected void append(final LoggingEvent event) {
+        final Map<String, Object> messages = new HashMap<String, Object>();
+        messages.put("level", toEmpty(event.getLevel().toString()));
+        messages.put("loggerName", toEmpty(event.getLoggerName()));
+        messages.put("thread", toEmpty(event.getThreadName()));
+        messages.put("message", toEmpty(event.getMessage().toString()));
+        messages.put("msec", event.getTimeStamp() % 1000);
+        messages.put("throwableInfo", event.getThrowableInformation() != null ? join(event.getThrowableStrRep(), "\n") : "");
+        messages.put("ndc", toEmpty(event.getNDC()));
+
+        if (event.locationInformationExists()) {
+            final LocationInfo locationInfo = event.getLocationInformation();
+            messages.put("className", toEmpty(locationInfo.getClassName()));
             messages.put("fileName", toEmpty(locationInfo.getFileName()));
             messages.put("lineNumber", toEmpty(locationInfo.getLineNumber()));
             messages.put("methodName", toEmpty(locationInfo.getMethodName()));
         }
-        
-		fluentLogger.log(label, messages, event.getTimeStamp() / 1000);
-	}
-	
-	public static String toEmpty(final String value) {
-	    return value == null ? "" : value; 
-	}
-	
-	public static String join(Object[] array, String separator) {
-	    if (array == null) {
+
+        fluentLogger.log(label, messages, event.getTimeStamp() / 1000);
+    }
+
+    public static String toEmpty(final String value) {
+        return value == null ? "" : value;
+    }
+
+    public static String join(Object[] array, String separator) {
+        if (array == null) {
             return null;
         }
-	    int startIndex = 0;
-	    int endIndex = array.length;
+        int startIndex = 0;
+        int endIndex = array.length;
         if (separator == null) {
             separator = "";
         }
 
-        // endIndex - startIndex > 0:   Len = NofStrings *(len(firstString) + len(separator))
-        //           (Assuming that all Strings are roughly equally long)
+        // endIndex - startIndex > 0: Len = NofStrings *(len(firstString) + len(separator))
+        // (Assuming that all Strings are roughly equally long)
         int bufSize = (endIndex - startIndex);
         if (bufSize <= 0) {
             return "";
         }
 
         bufSize *= ((array[startIndex] == null ? 16 : array[startIndex].toString().length())
-                        + separator.length());
+                + separator.length());
 
         final StringBuilder buf = new StringBuilder(bufSize);
 
@@ -114,5 +114,5 @@ public class FluentAppender extends AppenderSkeleton {
         }
         return buf.toString();
     }
-	
+
 }
