@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.fluentd.logger.FluentLogger;
 
@@ -66,6 +67,17 @@ public class FluentAppender extends AppenderSkeleton {
 		messages.put("message", event.getMessage().toString());
 		messages.put("msec", event.getTimeStamp() % 1000);
 		messages.put("throwableInfo", event.getThrowableInformation() != null ? join(event.getThrowableStrRep(), "\n") : "");
+        messages.put("threadName", event.getThreadName());
+        messages.put("ndc", event.getNDC());
+		
+        if(event.locationInformationExists()) {
+    		final LocationInfo locationInfo = event.getLocationInformation();
+    		messages.put("className", locationInfo.getClassName());
+            messages.put("fileName", locationInfo.getFileName());
+            messages.put("lineNumber", locationInfo.getLineNumber());
+            messages.put("methodName", locationInfo.getMethodName());
+        }
+        
 		fluentLogger.log(label, messages, event.getTimeStamp() / 1000);
 	}
 
