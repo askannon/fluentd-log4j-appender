@@ -59,24 +59,27 @@ public class FluentAppender extends AppenderSkeleton {
 	@Override
 	protected void append(final LoggingEvent event) {
 		final Map<String, Object> messages = new HashMap<String, Object>();
-		messages.put("level", event.getLevel().toString());
-		messages.put("loggerName", event.getLoggerName());
-		messages.put("thread", event.getThreadName());
-		messages.put("message", event.getMessage().toString());
+		messages.put("level", toEmpty(event.getLevel().toString()));
+		messages.put("loggerName", toEmpty(event.getLoggerName()));
+		messages.put("thread", toEmpty(event.getThreadName()));
+		messages.put("message", toEmpty(event.getMessage().toString()));
 		messages.put("msec", event.getTimeStamp() % 1000);
 		messages.put("throwableInfo", event.getThrowableInformation() != null ? join(event.getThrowableStrRep(), "\n") : "");
-        messages.put("threadName", event.getThreadName());
-        messages.put("ndc", event.getNDC());
+		messages.put("ndc", toEmpty(event.getNDC()));
 		
         if(event.locationInformationExists()) {
     		final LocationInfo locationInfo = event.getLocationInformation();
-    		messages.put("className", locationInfo.getClassName());
-            messages.put("fileName", locationInfo.getFileName());
-            messages.put("lineNumber", locationInfo.getLineNumber());
-            messages.put("methodName", locationInfo.getMethodName());
+    		messages.put("className", toEmpty(locationInfo.getClassName()));
+            messages.put("fileName", toEmpty(locationInfo.getFileName()));
+            messages.put("lineNumber", toEmpty(locationInfo.getLineNumber()));
+            messages.put("methodName", toEmpty(locationInfo.getMethodName()));
         }
         
 		fluentLogger.log(label, messages, event.getTimeStamp() / 1000);
+	}
+	
+	public static String toEmpty(final String value) {
+	    return value == null ? "" : value; 
 	}
 	
 	public static String join(Object[] array, String separator) {
