@@ -3,7 +3,6 @@ package org.fluentd.logger.sender.appender;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.text.StrBuilder;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
